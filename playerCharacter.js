@@ -1,5 +1,3 @@
-var player = new playerCharacter();
-
 function playerCharacter(){
 	this.imgaddr = "https://image.flaticon.com/icons/png/512/37/37232.png";
 	this.positionX = Player_Start_Posit[0]*parseInt(Tile_Default_Width);

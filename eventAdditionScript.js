@@ -100,5 +100,3 @@ function checkForAndRunEvents(xCoord,yCoord){
 		}
 	}
 }
-
-var allGameEvents = new GameEventsDatabase();
