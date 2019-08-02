@@ -1,20 +1,16 @@
 //everything below this comment is testing. remove all of it later
-var timeTester = new TimeStorage(Time_Limit);
-
-var global = new flagBank();
-global.instantiateFlag("timeIsUp",false);
 
 window.onload = function(){
 	var clockSpot = document.getElementById("clockSpot");
-	clockSpot.innerHTML = timeTester.getCurrentTimeAsHumanReadable();
+	clockSpot.innerHTML = timeKeeper.getCurrentTimeAsHumanReadable();
 	try{
-		global.checkFlag("falseFlag");
+		globalFlagBank.checkFlag("falseFlag");
 	}
 	catch(error){
 		console.error(error);
 	}
 	try{
-		global.setFlag("falseFlag",true);
+		globalFlagBank.setFlag("falseFlag",true);
 	}
 	catch(error){
 		console.error(error);
@@ -52,15 +48,15 @@ window.onload = function(){
 }
 
 function roomTransferTest(){
-	timeTester.roomTransferAdder();
+	timeKeeper.roomTransferAdder();
 	var clockSpot = document.getElementById("clockSpot");
-	clockSpot.innerHTML = timeTester.getCurrentTimeAsHumanReadable();
+	clockSpot.innerHTML = timeKeeper.getCurrentTimeAsHumanReadable();
 	showIfTimeIsUp();
 }
 
 function showIfTimeIsUp(){
 	var timeUpShow = document.getElementById("timeUpReader");
-	if(global.checkFlag("timeIsUp")){
+	if(globalFlagBank.checkFlag("timeIsUp")){
 		timeUpShow.innerHTML = "Time has run out!";
 	}
 	else{
@@ -72,10 +68,6 @@ function showCurrentHealth(){
 	var healthArea = document.getElementById("healthSpot");
 	healthArea.innerHTML = player.healthPoints;
 }
-
-var BigRoomDatabase = new roomDatabase();
-var currentRoom;
-var currentRoomMem;
 
 function renderRoom(){
 	var x = new room(new roomGridLayout(25,25));
