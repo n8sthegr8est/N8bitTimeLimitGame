@@ -1,0 +1,42 @@
+<html>
+	<head>
+		<title>
+			Testing Time Limit Stuff
+		</title>
+		<style>
+			#playArea {
+				position: relative;
+			}
+			#player {
+				z-index: 5;
+				position: absolute;
+			}
+			#player img {
+				position: absolute;
+			}
+			#healthText {
+				color: green;
+			}
+		</style>
+		<script src="GameStartConstants.js"></script>
+		<script src="eventAdditionScript.js"></script>
+		<script src="Flags.js"></script>
+		<script src="roomStorage.js"></script>
+		<script src="playerCharacter.js"></script>
+		<script src="TimeHandler.js"></script>
+		<script src="testingScript.js"></script>
+	</head>
+	<body>
+		<p>The in-game time is: <span id="clockSpot"></span>
+			<button onclick="roomTransferTest()">transfer room</button>
+			<span id="healthText"><span id="healthSpot"></span>HP</span>
+			<button onclick="hurtTest()">Test hurt</button>
+			<button onclick="healTest()">Test heal</button>
+		</p>
+		<p id="timeUpReader"></p>
+		<div id="playArea">
+			<div id="roomRender"></div>
+			<div id="player"></div>
+		</div>
+	</body>
+</html>
