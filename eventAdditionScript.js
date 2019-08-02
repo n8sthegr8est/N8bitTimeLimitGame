@@ -17,34 +17,16 @@ function GameEvent(roomGroupId,roomId,tileLoc,callback){
 	this.run = () => {
 		this.callback();
 	}
-	
-	/*this.Presets = () => {
-		this.roomTransfer = (to_roomGroupID,to_roomID,to_tileLoc) => {
-			currentRoom = BigRoomDatabase.getRoom(to_roomGroupID,to_roomID);
-			player.tilePositionX = to_tileLoc[0];
-			player.tilePositionY = to_tileLoc[1];
-			player.move();
-		}
-	}*/
 }
 
-/*GameEvent.prototype.Presets.roomTransfer(to_roomGroupID,to_roomID,to_tileLoc) = {
-	currentRoom = BigRoomDatabase.getRoom(to_roomGroupID,to_roomID);
-	player.tilePositionX = to_tileLoc[0];
-	player.tilePositionY = to_tileLoc[1];
-	player.move();
-}*/
-
-/*function GameEventPresets(){
-	
-	this.roomTransfer = (to_roomGroupID,to_roomID,to_tileLoc) => {
+GameEvent.Presets = {
+	roomTransfer: function(to_roomGroupID,to_roomID,to_tileLoc){
 		currentRoom = BigRoomDatabase.getRoom(to_roomGroupID,to_roomID);
-		player.tilePositionX = to_tileLoc[0];
-		player.tilePositionY = to_tileLoc[1];
-		player.move();
+		currentRoomMem = [to_roomGroupID,to_roomID];
+		player.setPosition(to_tileLoc);
+		reRenderRoom();
 	}
-	
-}*/
+};
 
 function GameEventsDatabase(){
 	this.events = [];
