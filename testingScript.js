@@ -19,6 +19,7 @@ window.onload = function(){
 	showCurrentHealth();
 	allGameEvents.addGameEvent(new GameEvent(0,0,[24,5],GameEvent.Presets.roomTransfer.bind(this,0,1,[0,5])));
 	allGameEvents.addGameEvent(new GameEvent(0,1,[0,5],GameEvent.Presets.roomTransfer.bind(this,0,0,[24,5])));
+	//allGameEvents.addGameEvent(new GameEvent(0,0,[24,5],GameEvent.Sequence.runSequence.bind(this,[GameEvent.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false),GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"falseFlag",false)])));//.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false)));
 	renderRoom();
 	placePlayer();
 }

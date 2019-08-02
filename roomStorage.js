@@ -1,70 +1,69 @@
-function roomDatabase(){
-	this.roomGroups = [];
+function roomDatabase(){// this object stores every room in the game, sorted into groups.
+	this.roomGroups = [];// the room groups the object stores
 	
-	this.addRoomGroup = (rG) => {
-		rG.idNum = this.roomGroups.length;
-		this.roomGroups.push(rG);
+	this.addRoomGroup = (rG) => {//adds a new room group to the database
+		rG.idNum = this.roomGroups.length;//sets an id number for the room group.
+		this.roomGroups.push(rG);//adds the group to the database
 	}
 	
-	this.getRoomGroup = (idNum) => {
-		for(let x of this.roomGroups){
-			if(x.idNum==idNum){
-				return x;
+	this.getRoomGroup = (idNum) => {//gets a specific room group from the database.
+		for(let x of this.roomGroups){//reads through the list of groups to find the one with the proper id number. This is in case they somehow get shuffled around.
+			if(x.idNum==idNum){//if the group has the id number we need do the following
+				return x;//return it
 			}
 		}
-		throw "Room Group " + idNum + " Does Not Exist!"
+		throw "Room Group " + idNum + " Does Not Exist!";//if we can't find the proper room group, throw an error so the program crashes.
 	}
 	
-	this.getRoom = (groupIdNum,roomIdNum) => {
-		return this.getRoomGroup(groupIdNum).getRoom(roomIdNum);
+	this.getRoom = (groupIdNum,roomIdNum) => {//gets a specific room from the database
+		return this.getRoomGroup(groupIdNum).getRoom(roomIdNum);//we first need to get the room group, then tell it to get the room
 	}
 }
 
-function roomGroup(localFlagBank){
-	this.rooms = [];
+function roomGroup(localFlagBank){// this object stores a number of rooms in a local group.
+	this.rooms = [];//the list of rooms in the group
 	if(localFlagBank!=undefined){
-		this.localFlagBank = localFlagBank;
+		this.localFlagBank = localFlagBank;//this local flag bank is used in the event that a flag is needed for a group of rooms to know about, but irrelevant to the global scope.
 	}
 	else{
 		this.localFlagBank = undefined;
 	}
 	
-	this.addRoom = (rm) => {
-		rm.idNum = this.rooms.length;
-		this.rooms.push(rm);
+	this.addRoom = (rm) => {//adds a room to the group
+		rm.idNum = this.rooms.length;//give the room an id number
+		this.rooms.push(rm);//add it to the group
 	}
 	
-	this.getRoom = (idNum) => {
-		for(let x of this.rooms){
-			if(x.idNum==idNum){
-				return x;
+	this.getRoom = (idNum) => {//gets a specific room from the group
+		for(let x of this.rooms){// read through the list of rooms to find the one with the proper id number. This is in case they somehow get shuffled around.
+			if(x.idNum==idNum){//if the room has the id number we need do the following
+				return x;//return it
 			}
 		}
-		throw "Room " + idNum + " Does Not Exist!";
+		throw "Room " + idNum + " Does Not Exist!";//if we can't find the proper room, throw an error so the program crashes.
 	}
 }
 
-function room(myLayout){
-	this.myLayout = myLayout;
+function room(myLayout){//a room in the game
+	this.myLayout = myLayout;//the room's layout is determined by a separate object, called "roomGridLayout". This is basically the concept of a room, while roomGridLayout is used to realize it
 	
-	this.setArea = (TL_Corner,areaHeight,areaWidth,withRoomTiles) => {
+	this.setArea = (TL_Corner,areaHeight,areaWidth,withRoomTiles) => {//an easy accessor for the roomGridLayout's function of the same name
 		myLayout.setArea(TL_Corner,areaHeight,areaWidth,withRoomTiles);
 	}
 	
-	this.getTile = (xCoord,yCoord) => {
+	this.getTile = (xCoord,yCoord) => {//gets a specified tile from the roomGridLayout
 		return myLayout.tiles[yCoord][xCoord];
 	}
 	
-	this.render = () => {
+	this.render = () => {//an easy accessor for the roomGridLayout's function of the same name
 		return myLayout.render();
-		//return "https://cdn.shopify.com/s/files/1/0115/9974/0987/products/Checkerboard-pattern_800x.png?v=1554920887";
 	}
 }
 
-function roomGridLayout(height,width){
-	this.height = height;
+function roomGridLayout(height,width){//the layout of a room in the game
+	this.height = height;//the size of the room
 	this.width = width;
-	this.tiles = [];
+	this.tiles = [];// the tiles that make the room
 	
 	var tempyTileHold = [];
 	for(let x = 0; x < this.width; x++){
@@ -75,7 +74,6 @@ function roomGridLayout(height,width){
 	}
 	
 	this.setArea = (TL_Corner,areaHeight,areaWidth,withRoomTiles) => {
-		//this.tiles[TL_Corner[0]][TL_Corner[1]]=withRoomTiles;
 		for(let i = TL_Corner[1]; i < TL_Corner[1] + areaHeight; i++){
 			for(let j = TL_Corner[0]; j < TL_Corner[0] + areaWidth; j++){
 				this.tiles[i][j] = withRoomTiles;
@@ -116,9 +114,7 @@ function roomTile(isWalkable,isDamaging,isSlippery){
 	else{
 		this.isSlippery = false;
 	}
-	//this.makesConnection = false;
 	this.picture = "https://cdn.shopify.com/s/files/1/0115/9974/0987/products/Checkerboard-pattern_800x.png?v=1554920887";
-	//this.connectTo = undefined;
 	
 	this.setPicture = (pic) => {
 		this.picture = pic;
