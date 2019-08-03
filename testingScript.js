@@ -51,6 +51,7 @@ function renderRoom(){
 	x.setArea([0,0],25,25,defaultUnwalkableTile);
 	x.setArea([1,1],23,23,defaultWalkableTile);
 	x.setArea([24,5],1,1,defaultDoorTile);
+	x.addDecoration([12,5],default2x2Deco);
 	var w = new room(new roomGridLayout(7,10));
 	w.setArea([0,0],7,10,defaultUnwalkableTile);
 	w.setArea([1,1],5,8,defaultWalkableTile);
