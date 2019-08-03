@@ -52,6 +52,10 @@ function renderRoom(){
 	x.setArea([1,1],23,23,defaultWalkableTile);
 	x.setArea([24,5],1,1,defaultDoorTile);
 	x.addDecoration([12,5],default2x2Deco);
+	x.addDecoration([8,21],default2x2Deco);
+	x.addFloorCovering([5,11],default2x2FloorCover);
+	x.addFloorCovering([18,7],default2x2FloorCoverPain);
+	x.addFloorCovering([11,4],default2x2FloorCover);
 	var w = new room(new roomGridLayout(7,10));
 	w.setArea([0,0],7,10,defaultUnwalkableTile);
 	w.setArea([1,1],5,8,defaultWalkableTile);
@@ -82,10 +86,10 @@ function placePlayer(){
 
 function hurtTest(){
 	player.hurt(1);
-	showCurrentHealth();
+	//showCurrentHealth();
 }
 
 function healTest(){
 	player.heal(1);
-	showCurrentHealth();
+	//showCurrentHealth();
 }

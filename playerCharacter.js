@@ -43,6 +43,9 @@ function playerCharacter(){
 		x.style.top = this.positionY + "px";//set the player object to the proper position
 		if(moved){//if we actually moved do the following
 			checkForAndRunEvents(this.tilePositionX,this.tilePositionY);//run any events on this tile.
+			if(currentRoom.getTile(this.tilePositionX,this.tilePositionY).isDamaging){
+				this.hurt(1);
+			}
 		}
 	}
 	
@@ -58,9 +61,11 @@ function playerCharacter(){
 	
 	this.heal = (amount) => {//this restores an amount of health points to the player
 		this.healthPoints += amount;
+		showCurrentHealth();
 	}
 	
 	this.hurt = (amount) => {//this removes an amount of health points from the player
 		this.healthPoints -= amount;
+		showCurrentHealth();
 	}
 }

@@ -64,6 +64,10 @@ function room(myLayout){//a room in the game
 	this.addDecoration = (TL_Corner,decoration) => {
 		return myLayout.addDecoration(TL_Corner,decoration);
 	}
+	
+	this.addFloorCovering = (TL_Corner,floorCover) => {
+		return myLayout.addFloorCovering(TL_Corner,floorCover);
+	}
 }
 
 function roomGridLayout(height,width){//the layout of a room in the game
@@ -71,6 +75,7 @@ function roomGridLayout(height,width){//the layout of a room in the game
 	this.width = width;
 	this.tiles = [];// the tiles that make the room
 	this.decorations = [];//the objects scattered around the room.
+	this.floorCoverings = [];
 	
 	var tempyTileHold = [];//this whole process is to make this.tiles a 2d array of default room tiles
 	for(let x = 0; x < this.width; x++){
@@ -94,14 +99,28 @@ function roomGridLayout(height,width){//the layout of a room in the game
 				this.tiles[i][j].isWalkable = false;//set each tile to be not walkable.
 			}
 		}
-		decoration.TL_Corner = TL_Corner;// add the TL_Corner data to the decoration. It's important for it to know. This isn't handed to the decoration on construction so they can be reused and repositioned as needed.
-		this.decorations.push(decoration);//add the decoration to the room
+		//decoration.TL_Corner = TL_Corner;// add the TL_Corner data to the decoration. It's important for it to know. This isn't handed to the decoration on construction so they can be reused and repositioned as needed.
+		this.decorations.push(decoration.copy());//add the decoration to the room
+		this.decorations[this.decorations.length-1].TL_Corner = TL_Corner;
+	}
+	
+	this.addFloorCovering = (TL_Corner,floorCover) => {
+		for(let i = TL_Corner[1]; i < TL_Corner[1] + floorCover.coverHeight; i++){
+			for(let j = TL_Corner[0]; j < TL_Corner[0] + floorCover.coverWidth; j++){
+				if(floorCover.isDamaging){
+					this.tiles[i][j].isDamaging = true;
+				}
+			}
+		}
+		//floorCover.TL_Corner = TL_Corner;
+		this.floorCoverings.push(floorCover.copy());
+		this.floorCoverings[this.floorCoverings.length-1].TL_Corner = TL_Corner;
 	}
 	
 	this.render = () => {//a function to show the room on the screen
 		
 		//start tiles rendering
-		var allImages = "<div>";//start with a wrapper div to hold each row
+		var allImages = "<div style=\"position:absolute;z-index:1;\">";//start with a wrapper div to hold each row
 		for(let x of this.tiles){//for every row of tiles do the following
 			allImages += "<div>";//create a div to contain all of the images
 			for(let y of x){//for every tile in the row, do the following
@@ -114,14 +133,29 @@ function roomGridLayout(height,width){//the layout of a room in the game
 		//end tiles rendering
 		
 		//start decos rendering
-		allImages += "<div>";
+		allImages += "<div style=\"position:absolute;z-index:3;\">";
 		for(let x of this.decorations){
 			allImages += "<div style=\"position:absolute;left:" + parseInt(Tile_Default_Width)*x.TL_Corner[0] + ";top:" + parseInt(Tile_Default_Height)*x.TL_Corner[1] + ";\">";
-			allImages += "<img src=\"" + x.render() + "\" style=\"width:" + parseInt(Tile_Default_Width)*x.decoWidth + ";height:" + parseInt(Tile_Default_Height)*x.decoHeight + ";z-index:3;\"></img>";
+			allImages += "<img src=\"" + x.render() + "\" style=\"width:" + parseInt(Tile_Default_Width)*x.decoWidth + "px;height:" + parseInt(Tile_Default_Height)*x.decoHeight + "px;\"></img>";
 			allImages += "</div>";
 		}
 		allImages += "</div>";
 		//end decos rendering
+		
+		//start floorCover rendering
+		allImages += "<div style=\"position:absolute;z-index:2;\">";
+		for(let x of this.floorCoverings){
+			for(let y = x.TL_Corner[1];y<x.TL_Corner[1]+x.coverHeight;y++){
+				allImages += "<div>";
+				for(let z = x.TL_Corner[0]; z < x.TL_Corner[0]+x.coverWidth;z++){
+					allImages += "<img src=\"" + x.render() + "\" style=\"position:absolute;width:" + Tile_Default_Width + ";height:" + Tile_Default_Height + ";";
+					allImages += "left:" + parseInt(Tile_Default_Width)*z + "px;top:" + parseInt(Tile_Default_Height)*y + "px;\"></img>";
+				}
+				allImages += "</div>";
+			}
+		}
+		allImages += "</div>";
+		//end floorCover rendering
 		
 		return allImages;//return the full room render
 	}
@@ -156,7 +190,7 @@ function roomTile(isWalkable,isDamaging,isSlippery){//the subunits of rooms. eac
 		return this.picture;
 	}
 	
-	this.copy = () => {
+	this.copy = () => {//used to create an exact copy of an existing room tile.
 		var newRoomTile = new roomTile(this.isWalkable,this.isDamaging, this.isSlippery);
 		newRoomTile.setPicture(this.picture);
 		return newRoomTile;
@@ -167,6 +201,33 @@ function decoration(decoHeight,decoWidth){//the objects in the room. These are s
 	this.decoHeight = decoHeight;//the size of the decoration.
 	this.decoWidth = decoWidth;
 	this.picture = "https://re-mm-assets.s3.amazonaws.com/product_photo/22868/large_Poly_HotPink_pms226up_1471502442.jpg";
+	//the picture shown when the decoration is rendered
+	
+	this.setPicture = (pic) => {//sets the picture for this decoration when the room is rendered
+		this.picture = pic;
+	}
+	
+	this.render = () => {//is used to retrieve the decoration's picture when the room is rendered
+		return this.picture;
+	}
+	
+	this.copy = () => {
+		var newDecoration = new decoration(this.decoHeight,this.decoWidth);
+		newDecoration.setPicture(this.picture);
+		return newDecoration;
+	}
+}
+
+function floorCovering(coverHeight,coverWidth,isDamaging){
+	this.coverHeight = coverHeight;
+	this.coverWidth = coverWidth;
+	if(isDamaging!=undefined){
+		this.isDamaging = isDamaging;
+	}
+	else{
+		this.isDamaging = false;
+	}
+	this.picture = "https://ih0.redbubble.net/image.433808434.9319/flat,550x550,075,f.jpg";
 	
 	this.setPicture = (pic) => {
 		this.picture = pic;
@@ -174,6 +235,12 @@ function decoration(decoHeight,decoWidth){//the objects in the room. These are s
 	
 	this.render = () => {
 		return this.picture;
+	}
+	
+	this.copy = () => {
+		var newFloorCovering = new floorCovering(this.coverHeight,this.coverWidth,this.isDamaging);
+		newFloorCovering.setPicture(this.picture);
+		return newFloorCovering;
 	}
 }
 
@@ -186,3 +253,8 @@ defaultDoorTile.setPicture("https://ih1.redbubble.net/image.548097730.1221/flat,
 
 //a set of default decorations for the same purpose as above.
 var default2x2Deco = new decoration(2,2);
+
+//a set of default floor coverings for constructing test rooms
+var default2x2FloorCover = new floorCovering(2,2,false);
+var default2x2FloorCoverPain = new floorCovering(2,2,true);
+default2x2FloorCoverPain.setPicture("https://ih1.redbubble.net/image.548092631.1099/flat,1000x1000,075,f.u1.jpg");
