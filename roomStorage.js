@@ -88,14 +88,14 @@ function roomGridLayout(height,width){//the layout of a room in the game
 		}
 	}
 	
-	this.addDecoration = (TL_Corner,decoration) => {
+	this.addDecoration = (TL_Corner,decoration) => {//adds a decoration to the room. 
 		for(let i = TL_Corner[1]; i < TL_Corner[1] + decoration.decoHeight; i++){//read through each row within the area
 			for(let j = TL_Corner[0]; j < TL_Corner[0] + decoration.decoWidth; j++){//read through each column (thus each tile) within the area
-				this.tiles[i][j].isWalkable = false;//set each tile to the one given
+				this.tiles[i][j].isWalkable = false;//set each tile to be not walkable.
 			}
 		}
-		decoration.TL_Corner = TL_Corner;
-		this.decorations.push(decoration);
+		decoration.TL_Corner = TL_Corner;// add the TL_Corner data to the decoration. It's important for it to know. This isn't handed to the decoration on construction so they can be reused and repositioned as needed.
+		this.decorations.push(decoration);//add the decoration to the room
 	}
 	
 	this.render = () => {//a function to show the room on the screen
