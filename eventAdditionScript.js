@@ -59,7 +59,7 @@ GameEvent.Presets = {
 GameEvent.Sequence = {
 	creteSequence: function(roomGroupId,roomId,tileLoc,events){
 		var myCallback = function(events){
-			for(let i of this){
+			for(let i of events){
 				if(typeof i === "GameEvent"){
 					i.run();
 				}
@@ -70,7 +70,7 @@ GameEvent.Sequence = {
 			}
 		}
 		
-		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(events.slice()));
+		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,events.slice()));
 	}
 };
 
