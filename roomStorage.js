@@ -163,8 +163,8 @@ function roomTile(isWalkable,isDamaging,isSlippery){//the subunits of rooms. eac
 	}
 }
 
-function decoration(decoHeight,decoWidth){
-	this.decoHeight = decoHeight;
+function decoration(decoHeight,decoWidth){//the objects in the room. These are sprites that appear above the room tiles.
+	this.decoHeight = decoHeight;//the size of the decoration.
 	this.decoWidth = decoWidth;
 	this.picture = "https://re-mm-assets.s3.amazonaws.com/product_photo/22868/large_Poly_HotPink_pms226up_1471502442.jpg";
 	
