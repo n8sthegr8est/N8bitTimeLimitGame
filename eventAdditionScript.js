@@ -56,18 +56,23 @@ GameEvent.Presets = {
 	}
 };
 
-/*GameEvent.Sequence = {
-	runSequence: function(events){
-		for(let i of events){
-			try{
-				i.run();
-			}
-			catch(error){
-				console.error(error);
+GameEvent.Sequence = {
+	creteSequence: function(roomGroupId,roomId,tileLoc,events){
+		var myCallback = function(events){
+			for(let i of this){
+				if(typeof i === "GameEvent"){
+					i.run();
+				}
+				else{
+					let j = new GameEvent(roomGroupId,roomId,tileLoc,i);
+					j.run();
+				}
 			}
 		}
+		
+		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(events.slice()));
 	}
-};*/
+};
 
 function GameEventsDatabase(){// a database to keep track of a set of game events.
 	this.events = [];//the array storing the game events.

@@ -59,6 +59,10 @@ function playerCharacter(){
 		x.style.top = this.positionY + "px";//set the player object to the proper position
 	}
 	
+	this.getPosition = () => {
+		return [this.tilePositionX,this.tilePositionY];
+	}
+	
 	this.heal = (amount) => {//this restores an amount of health points to the player
 		this.healthPoints += amount;
 		showCurrentHealth();
