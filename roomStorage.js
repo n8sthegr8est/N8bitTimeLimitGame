@@ -46,6 +46,8 @@ function roomGroup(localFlagBank){// this object stores a number of rooms in a l
 
 function room(myLayout){//a room in the game
 	this.myLayout = myLayout;//the room's layout is determined by a separate object, called "roomGridLayout". This is basically the concept of a room, while roomGridLayout is used to realize it
+	this.roomName = "default";//this also holds info like the name and id number of the room, which the actual layout doesn't need to worry about. (name is largely unused for now)
+	//id number is only assigned when the room is placed in a group.
 	
 	this.setArea = (TL_Corner,areaHeight,areaWidth,withRoomTiles) => {//an easy accessor for the roomGridLayout's function of the same name
 		myLayout.setArea(TL_Corner,areaHeight,areaWidth,withRoomTiles);
@@ -65,62 +67,63 @@ function roomGridLayout(height,width){//the layout of a room in the game
 	this.width = width;
 	this.tiles = [];// the tiles that make the room
 	
-	var tempyTileHold = [];
+	var tempyTileHold = [];//this whole process is to make this.tiles a 2d array of default room tiles
 	for(let x = 0; x < this.width; x++){
-		tempyTileHold.push(new roomTile());
+		tempyTileHold.push(new roomTile());//fill our temporary array with default room tiles, equal to the room width
 	}
 	for(let x = 0; x < this.height; x++){
-		this.tiles.push(tempyTileHold.slice());
+		this.tiles.push(tempyTileHold.slice());//fill our actual tiles array with copies of our temporary array.
 	}
 	
-	this.setArea = (TL_Corner,areaHeight,areaWidth,withRoomTiles) => {
-		for(let i = TL_Corner[1]; i < TL_Corner[1] + areaHeight; i++){
-			for(let j = TL_Corner[0]; j < TL_Corner[0] + areaWidth; j++){
-				this.tiles[i][j] = withRoomTiles;
+	this.setArea = (TL_Corner,areaHeight,areaWidth,withRoomTiles) => {//sets an area of room tiles within the room to the input room tile "withRoomTiles"
+		for(let i = TL_Corner[1]; i < TL_Corner[1] + areaHeight; i++){//read through each row within the area
+			for(let j = TL_Corner[0]; j < TL_Corner[0] + areaWidth; j++){//read through each column (thus each tile) within the area
+				this.tiles[i][j] = withRoomTiles;//set each tile to the one given
 			}
 		}
 	}
 	
-	this.render = () => {
-		var allImages = "<div>";
-		for(let x of this.tiles){
-			allImages += "<div>";
-			for(let y of x){
+	this.render = () => {//a function to show the room on the screen
+		var allImages = "<div>";//start with a wrapper div to hold each row
+		for(let x of this.tiles){//for every row of tiles do the following
+			allImages += "<div>";//create a div to contain all of the images
+			for(let y of x){//for every tile in the row, do the following
+				//add every tile to the row as an image, size adjusted based on the Tile_Default_Height and Tile_Default_Width values in GameStartConstants.
 				allImages += "<img src=\"" + y.render() + "\" style=\"width:" + Tile_Default_Width + ";height:" + Tile_Default_Height + ";\"></img>";
 			}
-			allImages += "</div>";
+			allImages += "</div>";//close the div to end the row
 		}
-		allImages += "</div>";
-		return allImages;
+		allImages += "</div>";//close the wrapper div
+		return allImages;//return the full room render
 	}
 }
 
-function roomTile(isWalkable,isDamaging,isSlippery){
+function roomTile(isWalkable,isDamaging,isSlippery){//the subunits of rooms. each room is made from several of these tiles.
 	if(isWalkable!=undefined){
-		this.isWalkable = isWalkable;
+		this.isWalkable = isWalkable;//determines if the tile can be walked on. if false, tile acts as a wall and prevents movement.
 	}
 	else{
-		this.isWalkable = false;
+		this.isWalkable = false;//if not defined in the arguments, assume it's a wall.
 	}
 	if(isDamaging!=undefined){
-		this.isDamaging = isDamaging;
+		this.isDamaging = isDamaging;//determines if walking on the tile hurts the player character. Irrelevant if "isWalkable" is false
 	}
 	else{
-		this.isDamaging = false;
+		this.isDamaging = false;//if not defined in the arguments, assume it's not damaging.
 	}
 	if(isSlippery!=undefined){
-		this.isSlippery = isSlippery;
+		this.isSlippery = isSlippery;//determines if the player will automatically be forced to the next tile when walked on. It's like ice. Irrelevant if "isWalkable" is false
 	}
 	else{
-		this.isSlippery = false;
+		this.isSlippery = false;//if not defined in the arguments, assume it's not slippery.
 	}
-	this.picture = "https://cdn.shopify.com/s/files/1/0115/9974/0987/products/Checkerboard-pattern_800x.png?v=1554920887";
+	this.picture = "https://cdn.shopify.com/s/files/1/0115/9974/0987/products/Checkerboard-pattern_800x.png?v=1554920887";//the default image we'll use. It's a checkerboard pattern. That's how you know it's a placeholder.
 	
-	this.setPicture = (pic) => {
+	this.setPicture = (pic) => {//sets the picture shown for this tile when the room is rendered
 		this.picture = pic;
 	}
 	
-	this.render = () => {
+	this.render = () => {//is used to retrieve this tile's picture when the room is rendered.
 		return this.picture;
 	}
 }

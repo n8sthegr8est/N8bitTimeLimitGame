@@ -3,13 +3,13 @@ function playerCharacter(){
 	this.imgaddr = "https://image.flaticon.com/icons/png/512/37/37232.png";//the image of the player character. Is a temporary placeholder for now.
 	this.positionX = Player_Start_Posit[0]*parseInt(Tile_Default_Width);//the actual position of the player on the screen (X-coordinate)
 	this.positionY = Player_Start_Posit[1]*parseInt(Tile_Default_Height);//the actual position of the player on the screen (Y-coordinate)
-	this.tilePositionX = Player_Start_Posit[0];//The position of the player on the map in memory, based on the number of tiles from the room's left side
-	this.tilePositionY = Player_Start_Posit[1];//The position of the player on the map in memory, based on the number of tiles from the room's top side
+	this.tilePositionX = Player_Start_Posit[0];//The position of the player on the map in memory, equal to the number of tiles from the room's left side
+	this.tilePositionY = Player_Start_Posit[1];//The position of the player on the map in memory, equal to the number of tiles from the room's top side
 	this.healthPoints = Player_Start_Health;//the current health of the player
 	
-	addListenerEvent(document,"keydown",function(e){//this event enables the player to move with the arrow keys
+	addListenerEvent(document,"keydown",(e) => {//this event enables the player to move with the arrow keys
 		e = e || window.event;//this line ensures cross-browser compatibility.
-		player.move(e);//calls the move function when input is received
+		this.move(e);//calls the move function when input is received
 	});
 	
 	this.render = () => {//returns the image of the player
