@@ -19,7 +19,10 @@ window.onload = function(){
 	showCurrentHealth();
 	allGameEvents.addGameEvent(new GameEvent(0,0,[24,5],GameEvent.Presets.roomTransfer.bind(this,0,1,[0,5])));
 	allGameEvents.addGameEvent(new GameEvent(0,1,[0,5],GameEvent.Presets.roomTransfer.bind(this,0,0,[24,5])));
-	allGameEvents.addGameEvent(GameEvent.Sequence.creteSequence(0,0,[1,5],[GameEvent.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false),GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"falseFlag")]));
+	allGameEvents.addGameEvent(GameEvent.Sequence.createSequence(0,0,[1,5],[GameEvent.Presets.showAlert.bind(this,"an alert"),GameEvent.Presets.showAlert.bind(this,"another alert")]));
+	allGameEvents.addGameEvent(GameEvent.Conditional.createConditional(0,0,[1,4],GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"timeIsUp"),GameEvent.Presets.showAlert.bind(this,"time is up"),GameEvent.Presets.showAlert.bind(this,"time is not up")));
+	allGameEvents.addGameEvent(GameEvent.Conditional.createConditional(0,0,[2,4],globalFlagBank.checkFlag("timeIsUp"),GameEvent.Presets.showAlert.bind(this,"time is up"),GameEvent.Presets.showAlert.bind(this,"time is not up")));
+	//allGameEvents.addGameEvent(GameEvent.Sequence.creteSequence(0,0,[1,5],[GameEvent.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false),GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"falseFlag")]));
 	//allGameEvents.addGameEvent(new GameEvent(0,0,[24,5],GameEvent.Sequence.runSequence.bind(this,[GameEvent.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false),GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"falseFlag",false)])));//.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false)));
 	renderRoom();
 	placePlayer();

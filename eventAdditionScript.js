@@ -53,11 +53,15 @@ GameEvent.Presets = {
 		catch(error){
 			console.error(error);//if it doesn't exist, send an error to the console.
 		}
+	},
+	
+	showAlert: function(alertText){
+		alert(alertText);
 	}
 };
 
 GameEvent.Sequence = {
-	creteSequence: function(roomGroupId,roomId,tileLoc,events){
+	createSequence: function(roomGroupId,roomId,tileLoc,events){
 		var myCallback = function(events){
 			for(let i of events){
 				if(typeof i === "GameEvent"){
@@ -71,6 +75,67 @@ GameEvent.Sequence = {
 		}
 		
 		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,events.slice()));
+	}
+};
+
+GameEvent.Conditional = {
+	createConditional: function(roomGroupId,roomId,tileLoc,ifCondition,trueRunEvent,falseRunEvent){
+		var myCallback = function(ifCondition,trueRunEvent,falseRunEvent){
+			var ifConditionEvent;
+			if(typeof ifCondition === "GameEvent"){
+				ifConditionEvent = ifCondition;
+			}
+			else{
+				ifConditionEvent = new GameEvent(roomGroupId,roomId,tileLoc,ifCondition);
+			}
+			try{
+				if(ifConditionEvent.run()){
+					if(typeof trueRunEvent === "GameEvent"){
+						trueRunEvent.run();
+					}
+					else{
+						let i = new GameEvent(roomGroupId,roomId,tileLoc,trueRunEvent);
+						i.run();
+					}
+				}
+				else{
+					if(typeof falseRunEvent === "GameEvent"){
+						falseRunEvent.run();
+					}
+					else{
+						let i = new GameEvent(roomGroupId,roomId,tileLoc,falseRunEvent);
+						i.run();
+					}
+				}
+			}
+			catch(error){
+				if(error.name==="TypeError"){
+					console.warn("received a boolean for ifCondition, when a GameEvent was expected. Boolean is accepted, but behavior may not be what was expected.");
+					if(ifCondition){
+						if(typeof trueRunEvent === "GameEvent"){
+							trueRunEvent.run();
+						}
+						else{
+							let i = new GameEvent(roomGroupId,roomId,tileLoc,trueRunEvent);
+							i.run();
+						}
+					}
+					else{
+						if(typeof falseRunEvent === "GameEvent"){
+							falseRunEvent.run();
+						}
+						else{
+							let i = new GameEvent(roomGroupId,roomId,tileLoc,falseRunEvent);
+							i.run();
+						}
+					}
+				}
+				else{
+					throw error;
+				}
+			}
+		}
+		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,ifCondition,trueRunEvent,falseRunEvent));
 	}
 };
 
