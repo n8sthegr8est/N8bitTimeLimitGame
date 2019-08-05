@@ -55,41 +55,64 @@ GameEvent.Presets = {
 		}
 	},
 	
-	showAlert: function(alertText){
+	showAlert: function(alertText){//a game event that shows an alert, not recommended to use outside of testing.
 		alert(alertText);
+	},
+	
+	nothing: function(){//a game event that explicitly does nothing
+		return;
 	}
 };
 
-GameEvent.Sequence = {
-	createSequence: function(roomGroupId,roomId,tileLoc,events){
-		var myCallback = function(events){
-			for(let i of events){
-				if(typeof i === "GameEvent"){
-					i.run();
+GameEvent.Sequence = function(roomGroupId,roomId,tileLoc,events){
+	var myCallback = function(events){
+		for(let i of events){
+			if(typeof i === "GameEvent"){
+				i.run();
+			}
+			else{
+				let j = new GameEvent(roomGroupId,roomId,tileLoc,i);
+				j.run();
+			}
+		}
+	}
+	
+	return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,events.slice()));
+};
+
+GameEvent.Conditional = function(roomGroupId,roomId,tileLoc,ifCondition,trueRunEvent,falseRunEvent){
+	var myCallback = function(ifCondition,trueRunEvent,falseRunEvent){
+		var ifConditionEvent;
+		if(typeof ifCondition === "GameEvent"){
+			ifConditionEvent = ifCondition;
+		}
+		else{
+			ifConditionEvent = new GameEvent(roomGroupId,roomId,tileLoc,ifCondition);
+		}
+		try{
+			if(ifConditionEvent.run()){
+				if(typeof trueRunEvent === "GameEvent"){
+					trueRunEvent.run();
 				}
 				else{
-					let j = new GameEvent(roomGroupId,roomId,tileLoc,i);
-					j.run();
+					let i = new GameEvent(roomGroupId,roomId,tileLoc,trueRunEvent);
+					i.run();
+				}
+			}
+			else{
+				if(typeof falseRunEvent === "GameEvent"){
+					falseRunEvent.run();
+				}
+				else{
+					let i = new GameEvent(roomGroupId,roomId,tileLoc,falseRunEvent);
+					i.run();
 				}
 			}
 		}
-		
-		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,events.slice()));
-	}
-};
-
-GameEvent.Conditional = {
-	createConditional: function(roomGroupId,roomId,tileLoc,ifCondition,trueRunEvent,falseRunEvent){
-		var myCallback = function(ifCondition,trueRunEvent,falseRunEvent){
-			var ifConditionEvent;
-			if(typeof ifCondition === "GameEvent"){
-				ifConditionEvent = ifCondition;
-			}
-			else{
-				ifConditionEvent = new GameEvent(roomGroupId,roomId,tileLoc,ifCondition);
-			}
-			try{
-				if(ifConditionEvent.run()){
+		catch(error){
+			if(error.name==="TypeError"){
+				console.warn("received a boolean for ifCondition, when a GameEvent was expected. Boolean is accepted, but behavior may not be what was expected.");
+				if(ifCondition){
 					if(typeof trueRunEvent === "GameEvent"){
 						trueRunEvent.run();
 					}
@@ -108,35 +131,12 @@ GameEvent.Conditional = {
 					}
 				}
 			}
-			catch(error){
-				if(error.name==="TypeError"){
-					console.warn("received a boolean for ifCondition, when a GameEvent was expected. Boolean is accepted, but behavior may not be what was expected.");
-					if(ifCondition){
-						if(typeof trueRunEvent === "GameEvent"){
-							trueRunEvent.run();
-						}
-						else{
-							let i = new GameEvent(roomGroupId,roomId,tileLoc,trueRunEvent);
-							i.run();
-						}
-					}
-					else{
-						if(typeof falseRunEvent === "GameEvent"){
-							falseRunEvent.run();
-						}
-						else{
-							let i = new GameEvent(roomGroupId,roomId,tileLoc,falseRunEvent);
-							i.run();
-						}
-					}
-				}
-				else{
-					throw error;
-				}
+			else{
+				throw error;
 			}
 		}
-		return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,ifCondition,trueRunEvent,falseRunEvent));
 	}
+	return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,ifCondition,trueRunEvent,falseRunEvent));
 };
 
 function GameEventsDatabase(){// a database to keep track of a set of game events.
