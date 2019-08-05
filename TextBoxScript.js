@@ -1,0 +1,7 @@
+function TextBoxArea(){
+	
+}
+
+function TextBox(){
+	
+}

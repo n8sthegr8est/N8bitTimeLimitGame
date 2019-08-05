@@ -75,6 +75,19 @@ GameEvent.Presets = {
 		timeKeeper.startTime();
 	},
 	
+	/*showTextbox: function(boxText){
+		//var tbArea = document.getElementById("textboxArea");
+		
+	},*/
+	
+	/*pauseEventsUntilInput: function(buttonToListenFor){
+		function stopListening(e){
+			document.removeEventListener("keydown",this,false);
+		}
+		addEventListener(document,"keydown",stopListening(e));
+		
+	},*/
+	
 	/*waitForSeconds: function(){
 		
 	},*/
