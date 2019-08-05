@@ -16,6 +16,8 @@ function TimeStorage(Time_Limit){//this object keeps track of the time limit and
 		if(this.timeElapsed>=this.Time_Limit){//may remove this statement later
 			globalFlagBank.setFlag("timeIsUp",true);
 		}
+		var clockSpot = document.getElementById("clockSpot");
+		clockSpot.innerHTML = this.getCurrentTimeAsHumanReadable();
 	}
 	
 	this.getCurrentTimeAsHumanReadable = () => {//translates the current time into a human readable format.

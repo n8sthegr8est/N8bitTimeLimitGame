@@ -29,12 +29,12 @@ GameEvent.Presets = {
 		currentRoomMem = [to_roomGroupID,to_roomID];//set our easy access roomDatabase key.
 		player.setPosition(to_tileLoc);//set the player's position to the correct position in the new room
 		reRenderRoom();//redraw the room on screen
-		timeKeeper.roomTransferAdder();//add the time penalty for switching rooms
+		//timeKeeper.roomTransferAdder();//add the time penalty for switching rooms
 		
 		//code to show time may change
-		var clockSpot = document.getElementById("clockSpot");
+		/*var clockSpot = document.getElementById("clockSpot");
 		clockSpot.innerHTML = timeKeeper.getCurrentTimeAsHumanReadable();
-		showIfTimeIsUp();
+		showIfTimeIsUp();*/
 	},
 	
 	setFlag: function(flagBank,flagName,flagged){//this is used to quickly set a flag within a given flagBank.
