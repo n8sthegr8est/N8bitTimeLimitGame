@@ -59,6 +59,26 @@ GameEvent.Presets = {
 		alert(alertText);
 	},
 	
+	freezePlayer: function(){
+		player.freeze();
+	},
+	
+	unFreezePlayer: function(){
+		player.unFreeze();
+	},
+	
+	pauseTime: function(){
+		timeKeeper.pauseTime();
+	},
+	
+	unPauseTime: function(){
+		timeKeeper.startTime();
+	},
+	
+	/*waitForSeconds: function(){
+		
+	},*/
+	
 	nothing: function(){//a game event that explicitly does nothing
 		return;
 	}

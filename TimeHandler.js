@@ -1,14 +1,23 @@
 //Note: Time is not literally time. The flow of time is controlled by in-game actions, not real-life time.
 
 function TimeStorage(Time_Limit){//this object keeps track of the time limit and the time elapsed
-	this.Time_Limit = Time_Limit;//the maximum amount of time
+	//this.Time_Limit = Time_Limit;//the maximum amount of time
 	//this.currentHour = Hour_Of_Game_Start;
 	//this.currentMinute = Minute_Of_Game_Start;
 	//this.currentDayHalf = Day_Half_Of_Game_Start;
-	this.timeElapsed = 0;//the amount of time that has passed since game start
+	//this.timeElapsed = 0;//the amount of time that has passed since game start
+	this.timer = new Timer();
 	
-	this.roomTransferAdder = () => {//adds the amount of time elapsed by moving to a new room
+	/*this.roomTransferAdder = () => {//adds the amount of time elapsed by moving to a new room
 		this.elapseTimeByEvent(Room_Transfer_Penalty);
+	}*/
+	
+	this.startTime = () => {
+		this.timer.startTimer();
+	}
+	
+	this.pauseTime = () => {
+		this.timer.pauseTimer();
 	}
 	
 	this.elapseTimeByEvent = (timeToElapse) => {//adds the amount of time elapsed by an event.
@@ -24,7 +33,7 @@ function TimeStorage(Time_Limit){//this object keeps track of the time limit and
 		var currentHour = Hour_Of_Game_Start;
 		var currentMinute = Minute_Of_Game_Start;
 		var currentDayHalf = Day_Half_Of_Game_Start;
-		currentMinute += this.timeElapsed;//add the time elapsed to the current minute
+		currentMinute += this.timer.timeElapsed;//add the time elapsed to the current minute
 		for(;currentMinute>=60;){//keep doing this as long as current minute is greater than or equal to 60
 			currentHour += 1;//increment the current hour
 			currentMinute -= 60;//remove 60 from the current minute
@@ -49,5 +58,32 @@ function TimeStorage(Time_Limit){//this object keeps track of the time limit and
 		var minuteString = currentMinute < 10 ? '0'+currentMinute : currentMinute;//if the current minute is less than 10, add a 0 to the front
 		var finalTimeString = currentHour + ":" + minuteString + " " + currentDayHalf;//put the entire time together
 		return finalTimeString;//return it
+	}
+}
+
+function Timer(){
+	this.timeElapsedSeconds = 0;
+	this.timeElapsed = 0;
+	
+	this.timerTick = undefined;
+	
+	this.startTimer = () => {
+		this.timerTick = setTimeout(() => {
+			this.timeElapsedSeconds++;
+			if(this.timeElapsedSeconds==60){
+				this.timeElapsedSeconds-=60
+				this.timeElapsed++;
+				var clockSpot = document.getElementById("clockSpot");
+				clockSpot.innerHTML = timeKeeper.getCurrentTimeAsHumanReadable();
+			}
+			if(this.timeElapsed>=Time_Limit){
+				globalFlagBank.setFlag("timeIsUp",true);
+			}
+			this.startTimer();
+		},1000);
+	}
+	
+	this.pauseTimer = () => {
+		clearTimeout(this.timerTick);
 	}
 }

@@ -6,6 +6,7 @@ function playerCharacter(){
 	this.tilePositionX = Player_Start_Posit[0];//The position of the player on the map in memory, equal to the number of tiles from the room's left side
 	this.tilePositionY = Player_Start_Posit[1];//The position of the player on the map in memory, equal to the number of tiles from the room's top side
 	this.healthPoints = Player_Start_Health;//the current health of the player
+	this.frozen = false;
 	
 	addListenerEvent(document,"keydown",(e) => {//this event enables the player to move with the arrow keys
 		e = e || window.event;//this line ensures cross-browser compatibility.
@@ -17,6 +18,7 @@ function playerCharacter(){
 	}
 	
 	this.move = (e) => {//moves the player around the screen
+	if(!this.frozen){
 		var moved = false;//used to determine if the player actually moved or not. This is to avoid events firing from the same space.
 		if(e.code == "ArrowLeft" && currentRoom.getTile(this.tilePositionX-1,this.tilePositionY).isWalkable){ //these if statements check which button was pressed and if the tile in that direction is a valid tile to move to.
 			this.positionX -= parseInt(Tile_Default_Width);//if the above is true, move the player to the left
@@ -48,6 +50,7 @@ function playerCharacter(){
 			}
 		}
 	}
+	}
 	
 	this.setPosition = (pos) => {//this sets the player's position to a point on the screen. Mostly used by events
 		this.tilePositionX = pos[0];//set the position in memory
@@ -71,5 +74,13 @@ function playerCharacter(){
 	this.hurt = (amount) => {//this removes an amount of health points from the player
 		this.healthPoints -= amount;
 		showCurrentHealth();
+	}
+	
+	this.freeze = () => {
+		this.frozen = true;
+	}
+	
+	this.unFreeze = () => {
+		this.frozen = false;
 	}
 }
