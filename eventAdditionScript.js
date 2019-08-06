@@ -75,6 +75,18 @@ GameEvent.Presets = {
 		timeKeeper.startTime();
 	},
 	
+	showTextbox_InputClose: function(txt){
+		var myTB = new TextBox(txt);
+		globalTextBoxShowcase.setCurrentTextBox(myTB);
+		globalTextBoxShowcase.showUntilInput();
+	},
+	
+	showTextbox_TimerClose: function(txt,sec){
+		var myTB = new TextBox(txt);
+		globalTextBoxShowcase.setCurrentTextBox(myTB);
+		globalTextBoxShowcase.showForSeconds(sec);
+	},
+	
 	/*showTextbox: function(boxText){
 		//var tbArea = document.getElementById("textboxArea");
 		

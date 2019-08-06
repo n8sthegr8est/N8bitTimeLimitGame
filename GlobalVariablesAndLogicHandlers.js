@@ -17,4 +17,6 @@ var allGameEvents = new GameEventsDatabase();
 //the object that keeps track of the player's current location
 var player = new playerCharacter();
 
+var globalTextBoxShowcase = new TextBoxShowcase();
+
 //var myTimerEvent = setInterval(timeKeeper.elapseTimeByEvent.bind(this,1),60000);

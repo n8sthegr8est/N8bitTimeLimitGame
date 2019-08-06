@@ -18,10 +18,17 @@
 				color: green;
 			}
 			#textboxArea {
-				position: absolute;
+				position: fixed;
 				z-index: 10;
-				right: 0px;
-				display: block;
+				bottom: 5px;
+				width: 90%;
+				left: 5%;
+				height: 4em;
+				background-color: black;
+				display: none;
+				color: white;
+				border: 3px solid #3FA994;
+				padding: 10px;
 			}
 		</style>
 		<script src="GameStartConstants.js"></script>
@@ -30,8 +37,10 @@
 		<script src="roomStorage.js"></script>
 		<script src="playerCharacter.js"></script>
 		<script src="TimeHandler.js"></script>
+		<script src="TextBoxScript.js"></script>
 		<script src="GlobalVariablesAndLogicHandlers.js"></script>
 		<script src="testingScript.js"></script>
+		<meta charset="UTF-8"></meta>
 	</head>
 	<body>
 		<p>The in-game time is: <span id="clockSpot"></span>
