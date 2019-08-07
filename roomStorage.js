@@ -61,11 +61,11 @@ function room(myLayout){//a room in the game
 		return myLayout.render();
 	}
 	
-	this.addDecoration = (TL_Corner,decoration) => {
+	this.addDecoration = (TL_Corner,decoration) => {//an easy accessor for the roomGridLayout's function of the same name
 		return myLayout.addDecoration(TL_Corner,decoration);
 	}
 	
-	this.addFloorCovering = (TL_Corner,floorCover) => {
+	this.addFloorCovering = (TL_Corner,floorCover) => {//an easy accessor for the roomGridLayout's function of the same name
 		return myLayout.addFloorCovering(TL_Corner,floorCover);
 	}
 }
@@ -101,26 +101,26 @@ function roomGridLayout(height,width){//the layout of a room in the game
 		}
 		//decoration.TL_Corner = TL_Corner;// add the TL_Corner data to the decoration. It's important for it to know. This isn't handed to the decoration on construction so they can be reused and repositioned as needed.
 		this.decorations.push(decoration.copy());//add the decoration to the room
-		this.decorations[this.decorations.length-1].TL_Corner = TL_Corner;
+		this.decorations[this.decorations.length-1].TL_Corner = TL_Corner;//add the TL_Corner data to the decoration. It's important for it to know. This isn't handed to the decoration on construction so they can be reused and repositioned as needed.
 	}
 	
-	this.addFloorCovering = (TL_Corner,floorCover) => {
-		for(let i = TL_Corner[1]; i < TL_Corner[1] + floorCover.coverHeight; i++){
-			for(let j = TL_Corner[0]; j < TL_Corner[0] + floorCover.coverWidth; j++){
-				if(floorCover.isDamaging){
-					this.tiles[i][j].isDamaging = true;
+	this.addFloorCovering = (TL_Corner,floorCover) => {//adds a covering to the floor. 
+		for(let i = TL_Corner[1]; i < TL_Corner[1] + floorCover.coverHeight; i++){//read through each row within the area
+			for(let j = TL_Corner[0]; j < TL_Corner[0] + floorCover.coverWidth; j++){//read through each column (thus each tile) within the area
+				if(floorCover.isDamaging){//some floor coverings are just harmless decoration. Others are painful hazards. Check which one this is.
+					this.tiles[i][j].isDamaging = true;//if it is a painful hazard, set the floor to be damaging.
 				}
 			}
 		}
 		//floorCover.TL_Corner = TL_Corner;
-		this.floorCoverings.push(floorCover.copy());
-		this.floorCoverings[this.floorCoverings.length-1].TL_Corner = TL_Corner;
+		this.floorCoverings.push(floorCover.copy());//add the floorCovering to the room
+		this.floorCoverings[this.floorCoverings.length-1].TL_Corner = TL_Corner;//add the TL_Corner data to the decoration. It's important for it to know. This isn't handed to the decoration on construction so they can be reused and repositioned as needed.
 	}
 	
 	this.render = () => {//a function to show the room on the screen
 		
 		//start tiles rendering
-		var allImages = "<div style=\"position:absolute;z-index:1;\">";//start with a wrapper div to hold each row
+		var allImages = "<div class=\"RoomFloor\">";//start with a wrapper div to hold each row of floor tiles
 		for(let x of this.tiles){//for every row of tiles do the following
 			allImages += "<div>";//create a div to contain all of the images
 			for(let y of x){//for every tile in the row, do the following
@@ -133,34 +133,37 @@ function roomGridLayout(height,width){//the layout of a room in the game
 		//end tiles rendering
 		
 		//start decos rendering
-		allImages += "<div style=\"position:absolute;z-index:3;\">";
-		for(let x of this.decorations){
+		allImages += "<div class=\"RoomDecos\">";//start a second wrapper div to hold each decoration
+		for(let x of this.decorations){//for every decoration, do the following.
 			allImages += "<div style=\"position:absolute;left:" + parseInt(Tile_Default_Width)*x.TL_Corner[0] + ";top:" + parseInt(Tile_Default_Height)*x.TL_Corner[1] + ";\">";
 			allImages += "<img src=\"" + x.render() + "\" style=\"width:" + parseInt(Tile_Default_Width)*x.decoWidth + "px;height:" + parseInt(Tile_Default_Height)*x.decoHeight + "px;\"></img>";
 			allImages += "</div>";
+			//create a new div to contain it, and resize its image to fit the area it fills. Decorations are one image so we don't need to draw separate tiles for one object.
 		}
-		allImages += "</div>";
+		allImages += "</div>";//close the wrapper div
 		//end decos rendering
 		
 		//start floorCover rendering
-		allImages += "<div style=\"position:absolute;z-index:2;\">";
-		for(let x of this.floorCoverings){
-			for(let y = x.TL_Corner[1];y<x.TL_Corner[1]+x.coverHeight;y++){
-				allImages += "<div>";
-				for(let z = x.TL_Corner[0]; z < x.TL_Corner[0]+x.coverWidth;z++){
+		allImages += "<div class=\"RoomFloorCoverings\">";//start a third wrapper div to hold all the floor coverings
+		for(let x of this.floorCoverings){//for every floor covering, do the following.
+			for(let y = x.TL_Corner[1];y<x.TL_Corner[1]+x.coverHeight;y++){//for every row covered by the floor covering, do the following
+				allImages += "<div>";//create a wrapper div
+				for(let z = x.TL_Corner[0]; z < x.TL_Corner[0]+x.coverWidth;z++){//for every tile in every row of the floor covering, do the following
 					allImages += "<img src=\"" + x.render() + "\" style=\"position:absolute;width:" + Tile_Default_Width + ";height:" + Tile_Default_Height + ";";
 					allImages += "left:" + parseInt(Tile_Default_Width)*z + "px;top:" + parseInt(Tile_Default_Height)*y + "px;\"></img>";
+					//add the floor covering's image to the div.
 				}
-				allImages += "</div>";
+				allImages += "</div>";//close the internal wrapper div
 			}
 		}
-		allImages += "</div>";
+		allImages += "</div>";//close the wrapper div
 		//end floorCover rendering
 		
 		return allImages;//return the full room render
 	}
 }
 
+//roomTiles have z-index of 1
 function roomTile(isWalkable,isDamaging,isSlippery){//the subunits of rooms. each room is made from several of these tiles.
 	if(isWalkable!=undefined){
 		this.isWalkable = isWalkable;//determines if the tile can be walked on. if false, tile acts as a wall and prevents movement.
@@ -197,6 +200,7 @@ function roomTile(isWalkable,isDamaging,isSlippery){//the subunits of rooms. eac
 	}
 }
 
+//decorations have z-index of 3
 function decoration(decoHeight,decoWidth){//the objects in the room. These are sprites that appear above the room tiles.
 	this.decoHeight = decoHeight;//the size of the decoration.
 	this.decoWidth = decoWidth;
@@ -211,33 +215,34 @@ function decoration(decoHeight,decoWidth){//the objects in the room. These are s
 		return this.picture;
 	}
 	
-	this.copy = () => {
+	this.copy = () => {//used to create an exact copy of an existing decoration.
 		var newDecoration = new decoration(this.decoHeight,this.decoWidth);
 		newDecoration.setPicture(this.picture);
 		return newDecoration;
 	}
 }
 
-function floorCovering(coverHeight,coverWidth,isDamaging){
-	this.coverHeight = coverHeight;
+//floorCoverings have z-index of 2
+function floorCovering(coverHeight,coverWidth,isDamaging){//The objects in a room that cover the floor. Don't block movement, but may hurt to step on.
+	this.coverHeight = coverHeight;//the size of the floor covering
 	this.coverWidth = coverWidth;
-	if(isDamaging!=undefined){
+	if(isDamaging!=undefined){//sets whether stepping on this floor covering hurts
 		this.isDamaging = isDamaging;
 	}
 	else{
-		this.isDamaging = false;
+		this.isDamaging = false;//assume it doesn't if not mentioned.
 	}
-	this.picture = "https://ih0.redbubble.net/image.433808434.9319/flat,550x550,075,f.jpg";
+	this.picture = "https://ih0.redbubble.net/image.433808434.9319/flat,550x550,075,f.jpg";//the picture shown when rendering the floor covering
 	
-	this.setPicture = (pic) => {
+	this.setPicture = (pic) => {//sets the picture for this floor covering when the room is rendered
 		this.picture = pic;
 	}
 	
-	this.render = () => {
+	this.render = () => {//is used to retrieve the floor covering's picture when the room is rendered
 		return this.picture;
 	}
 	
-	this.copy = () => {
+	this.copy = () => {//used to create an exact copy of an existing floorCovering.
 		var newFloorCovering = new floorCovering(this.coverHeight,this.coverWidth,this.isDamaging);
 		newFloorCovering.setPicture(this.picture);
 		return newFloorCovering;

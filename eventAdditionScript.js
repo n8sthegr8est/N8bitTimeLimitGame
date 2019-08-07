@@ -59,32 +59,32 @@ GameEvent.Presets = {
 		alert(alertText);
 	},
 	
-	freezePlayer: function(){
+	freezePlayer: function(){//a game event that disables player movement
 		player.freeze();
 	},
 	
-	unFreezePlayer: function(){
+	unFreezePlayer: function(){//a game event that enables player movement
 		player.unFreeze();
 	},
 	
-	pauseTime: function(){
+	pauseTime: function(){//a game event that pauses the game timer
 		timeKeeper.pauseTime();
 	},
 	
-	unPauseTime: function(){
+	unPauseTime: function(){//a game event that unpauses the game timer
 		timeKeeper.startTime();
 	},
 	
-	showTextbox_InputClose: function(txt){
-		var myTB = new TextBox(txt);
-		globalTextBoxShowcase.setCurrentTextBox(myTB);
-		globalTextBoxShowcase.showUntilInput();
+	showTextbox_InputClose: function(txt){//a game event that shows a text box that requires input from the player to close.
+		var myTB = new TextBox(txt);//create a new text box
+		globalTextBoxShowcase.setCurrentTextBox(myTB);//tell the game to show the new text box next time it shows a text box.
+		globalTextBoxShowcase.showUntilInput();//tell the game to show a text box of type "Input_Exit"
 	},
 	
-	showTextbox_TimerClose: function(txt,sec){
-		var myTB = new TextBox(txt);
-		globalTextBoxShowcase.setCurrentTextBox(myTB);
-		globalTextBoxShowcase.showForSeconds(sec);
+	showTextbox_TimerClose: function(txt,sec){//a game event that shows a text box that closes after a few seconds
+		var myTB = new TextBox(txt);//create a new text box
+		globalTextBoxShowcase.setCurrentTextBox(myTB);//tell the game to show the new text box next time it shows a text box.
+		globalTextBoxShowcase.showForSeconds(sec);//tell the game to show a text box of type "Time_Exit" for sec seconds.
 	},
 	
 	/*showTextbox: function(boxText){
@@ -109,56 +109,60 @@ GameEvent.Presets = {
 	}
 };
 
-GameEvent.Sequence = function(roomGroupId,roomId,tileLoc,events){
-	var myCallback = function(events){
-		for(let i of events){
-			if(typeof i === "GameEvent"){
-				i.run();
+GameEvent.Sequence = function(roomGroupId,roomId,tileLoc,events){//this is used to run a number of GameEvents in sequence. It is, itself, a GameEvent.
+	var myCallback = function(events){//this function runs all of the GameEvents in the sequence
+		for(let i of events){//read through every GameEvent in order
+			if(typeof i === "GameEvent"){//if the GameEvent is officially a GameEvent, do the following
+				i.run();//run it
 			}
-			else{
-				let j = new GameEvent(roomGroupId,roomId,tileLoc,i);
-				j.run();
+			else{//otherwise (if it's a function, as it would be if it's a GameEvent.Preset)
+				let j = new GameEvent(roomGroupId,roomId,tileLoc,i);//create a new Game event at the location specified
+				j.run();//run our new event.
 			}
 		}
 	}
 	
 	return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,events.slice()));
+	//create a new GameEvent at the location specified, which calls the method above. return that GameEvent.
 };
 
 GameEvent.Conditional = function(roomGroupId,roomId,tileLoc,ifCondition,trueRunEvent,falseRunEvent){
-	var myCallback = function(ifCondition,trueRunEvent,falseRunEvent){
-		var ifConditionEvent;
-		if(typeof ifCondition === "GameEvent"){
-			ifConditionEvent = ifCondition;
+	//this is used to run one GameEvent to get a boolean value, and runs one of two others based on the boolean. Usually the boolean event is a Flag check.
+	var myCallback = function(ifCondition,trueRunEvent,falseRunEvent){//this function is what runs the events
+		var ifConditionEvent;//create a variable for the if condition event, so we can run it when needed.
+		if(typeof ifCondition === "GameEvent"){//if the if condition we've been sent is already a GameEvent do the following
+			ifConditionEvent = ifCondition;//set the variable above to it.
 		}
-		else{
-			ifConditionEvent = new GameEvent(roomGroupId,roomId,tileLoc,ifCondition);
+		else{//otherwise (it's probably a function, but there's a possibility it's a boolean)
+			ifConditionEvent = new GameEvent(roomGroupId,roomId,tileLoc,ifCondition);//create a new game event with it as the callback (we'll handle the boolean possibility shortly)
 		}
 		try{
-			if(ifConditionEvent.run()){
-				if(typeof trueRunEvent === "GameEvent"){
-					trueRunEvent.run();
+			if(ifConditionEvent.run()){//run our ifConditionEvent. If it's true, do the following
+				if(typeof trueRunEvent === "GameEvent"){//if the trueRunEvent is already an event do the following
+					trueRunEvent.run();//run it
 				}
-				else{
-					let i = new GameEvent(roomGroupId,roomId,tileLoc,trueRunEvent);
-					i.run();
+				else{//otherwise (it's a function)
+					let i = new GameEvent(roomGroupId,roomId,tileLoc,trueRunEvent);//create a new game event with it as the callback
+					i.run();//run the new event
 				}
 			}
-			else{
-				if(typeof falseRunEvent === "GameEvent"){
-					falseRunEvent.run();
+			else{//otherwise (our ifConditionEvent returned false)
+				if(typeof falseRunEvent === "GameEvent"){//if the falseRunEvent is already an event do the following
+					falseRunEvent.run();//run it
 				}
-				else{
-					let i = new GameEvent(roomGroupId,roomId,tileLoc,falseRunEvent);
-					i.run();
+				else{//otherwise (it's a function)
+					let i = new GameEvent(roomGroupId,roomId,tileLoc,falseRunEvent);//if the falseRunEvent is already an event do the following
+					i.run();//run it
 				}
 			}
 		}
-		catch(error){
-			if(error.name==="TypeError"){
-				console.warn("received a boolean for ifCondition, when a GameEvent was expected. Boolean is accepted, but behavior may not be what was expected.");
-				if(ifCondition){
-					if(typeof trueRunEvent === "GameEvent"){
+		catch(error){//this is where we handle that boolean possibility
+			if(error.name==="TypeError"){//if it's a type error, do the following
+				console.warn("received a boolean for ifCondition, when a GameEvent was expected. Boolean is accepted, but behavior may not be what was expected.");//warn that we got a boolean when a GameEvent was expected.
+				//note that the boolean should still be treated as valid, but it is likely the result of a programming mistake. We likely ran the function when passing it to this as an argument. Since there's an off chance
+				//the boolean wasn't a mistake, we still accept it.
+				if(ifCondition){//if the boolean is true
+					if(typeof trueRunEvent === "GameEvent"){//run the trueRunEvent
 						trueRunEvent.run();
 					}
 					else{
@@ -166,8 +170,8 @@ GameEvent.Conditional = function(roomGroupId,roomId,tileLoc,ifCondition,trueRunE
 						i.run();
 					}
 				}
-				else{
-					if(typeof falseRunEvent === "GameEvent"){
+				else{//otherwise (boolean is false)
+					if(typeof falseRunEvent === "GameEvent"){//run the falseRunEvent
 						falseRunEvent.run();
 					}
 					else{
@@ -176,12 +180,14 @@ GameEvent.Conditional = function(roomGroupId,roomId,tileLoc,ifCondition,trueRunE
 					}
 				}
 			}
-			else{
+			else{//if the error isn't a TypeError, we need to toss it further up, since we can't fix it.
 				throw error;
 			}
 		}
 	}
+	
 	return new GameEvent(roomGroupId,roomId,tileLoc,myCallback.bind(this,ifCondition,trueRunEvent,falseRunEvent));
+	//create a new GameEvent at the location specified, which calls the method above. return that GameEvent.
 };
 
 function GameEventsDatabase(){// a database to keep track of a set of game events.

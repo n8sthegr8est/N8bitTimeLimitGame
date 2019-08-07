@@ -45,8 +45,8 @@ function playerCharacter(){
 		x.style.top = this.positionY + "px";//set the player object to the proper position
 		if(moved){//if we actually moved do the following
 			checkForAndRunEvents(this.tilePositionX,this.tilePositionY);//run any events on this tile.
-			if(currentRoom.getTile(this.tilePositionX,this.tilePositionY).isDamaging){
-				this.hurt(1);
+			if(currentRoom.getTile(this.tilePositionX,this.tilePositionY).isDamaging){//if the tile is damaging, do the following
+				this.hurt(1);//lose 1 hp.
 			}
 		}
 	}
@@ -62,7 +62,7 @@ function playerCharacter(){
 		x.style.top = this.positionY + "px";//set the player object to the proper position
 	}
 	
-	this.getPosition = () => {
+	this.getPosition = () => {//this reads the player's current position on the screen.
 		return [this.tilePositionX,this.tilePositionY];
 	}
 	
@@ -76,11 +76,11 @@ function playerCharacter(){
 		showCurrentHealth();
 	}
 	
-	this.freeze = () => {
+	this.freeze = () => {//disables player movement
 		this.frozen = true;
 	}
 	
-	this.unFreeze = () => {
+	this.unFreeze = () => {//enables player movement
 		this.frozen = false;
 	}
 }

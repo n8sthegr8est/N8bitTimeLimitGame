@@ -12,11 +12,11 @@ function TimeStorage(Time_Limit){//this object keeps track of the time limit and
 		this.elapseTimeByEvent(Room_Transfer_Penalty);
 	}*/
 	
-	this.startTime = () => {
+	this.startTime = () => {//starts the game timer.
 		this.timer.startTimer();
 	}
 	
-	this.pauseTime = () => {
+	this.pauseTime = () => {//pauses the game timer.
 		this.timer.pauseTimer();
 	}
 	
@@ -61,29 +61,38 @@ function TimeStorage(Time_Limit){//this object keeps track of the time limit and
 	}
 }
 
-function Timer(){
-	this.timeElapsedSeconds = 0;
+function Timer(){//this object runs the game timer. Can be paused and started back up as needed.
+	this.timeElapsedSeconds = 0;//the time starts having not elapsed at all.
 	this.timeElapsed = 0;
 	
-	this.timerTick = undefined;
+	this.timerTick = undefined;//this is used to elapse time.
 	
-	this.startTimer = () => {
-		this.timerTick = setTimeout(() => {
-			this.timeElapsedSeconds++;
-			if(this.timeElapsedSeconds==60){
-				this.timeElapsedSeconds-=60
-				this.timeElapsed++;
-				var clockSpot = document.getElementById("clockSpot");
-				clockSpot.innerHTML = timeKeeper.getCurrentTimeAsHumanReadable();
+	this.startTimer = () => {//this starts time elapsing.
+		this.timerTick = setTimeout(() => {//set the timer to tick once after 1 second (1000 milliseconds)
+			this.timeElapsedSeconds++;//increment the time elapsed by one second.
+			if(this.timeElapsedSeconds==60){//if seconds have incremented 60 times, then one minute has elapsed.
+				this.timeElapsedSeconds-=60//remove 60 ticks from our seconds counter
+				this.timeElapsed++;//elapse time by one minute.
+				var clockSpot = document.getElementById("clockSpot");//get the clock display
+				clockSpot.innerHTML = timeKeeper.getCurrentTimeAsHumanReadable();//and show the new time since a minute has passed.
 			}
-			if(this.timeElapsed>=Time_Limit){
-				globalFlagBank.setFlag("timeIsUp",true);
+			if(this.timeElapsed>=Time_Limit){//if the time limit has been reached
+				globalFlagBank.setFlag("timeIsUp",true);//set a flag
 			}
-			this.startTimer();
+			this.startTimer();//ready the timer to perform another tick.
 		},1000);
 	}
 	
-	this.pauseTimer = () => {
-		clearTimeout(this.timerTick);
+	this.pauseTimer = () => {//this pauses time elapsing. This may lose milliseconds, but it doesn't matter in the long run.
+		clearTimeout(this.timerTick);//stop the next timer tick.
+		/*
+		 *  Developers note:
+		 *  In theory, if time can be repeatedly stopped before any ticks can run, but with enough time for the player to move in between,
+		 *  then the game could be completed with an official time of 0 hours, 0 minutes, and 0 seconds. Considering this would be such a long,
+		 *  tedious, boring, and frustrating task (and ridiculously easy to mess up part way through, thus forcing restarts) (plus it would be
+		 *  impossible to tell if a tick has run, since there isn't a visual indicator until 60 have passed), we can ignore this issue, because
+		 *  who the fudge would want to do that? It's pure insanity! If you're insane enough to try and manage to succeed, then I say take your
+		 *  time of 00:00:00! You've earned it if you subject yourself to that nonsense.
+		 */
 	}
 }

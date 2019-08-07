@@ -30,6 +30,31 @@
 				border: 3px solid #3FA994;
 				padding: 10px;
 			}
+			#speakerImageLeft {
+				position: fixed;
+				z-index: 9;
+				left: 5%;
+				display: none;
+			}
+			#speakerImageRight {
+				position: fixed;
+				z-index: 9;
+				right: 5%;
+				display: none;
+			}
+			
+			.RoomDecos {
+				position: absolute;
+				z-index: 3;
+			}
+			.RoomFloorCoverings {
+				position: absolute;
+				z-index: 2;
+			}
+			.RoomFloor {
+				position: absolute;
+				z-index: 1;
+			}
 		</style>
 		<script src="GameStartConstants.js"></script>
 		<script src="eventAdditionScript.js"></script>
@@ -55,5 +80,7 @@
 			<div id="player"></div>
 		</div>
 		<div id="textboxArea"></div>
+		<div id="speakerImageLeft"></div>
+		<div id="speakerImageRight"></div>
 	</body>
 </html>
