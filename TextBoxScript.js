@@ -19,6 +19,7 @@ function TextBoxShowcase(){//this function is used to show text boxes in the gam
 	
 	this.showUntilInput = () => {//this is used to show the currentTextBox in an "Input_Exit" type, meaning it stays on screen forever until the user inputs "z"
 		clearTimeout(this.myCloseBoxTimeoutMemory);//cancel the auto close timer if any text box previously shown had one set (a "Time_Exit" text box that hadn't yet closed would auto close this box if we didn't)
+		clearInterval(this.myTextReveal);//if the previous text box was still typing, clear the interval to prevent the animations overlapping.
 		this.textboxType = "Input_Exit";//tell the game that this is an "Input_Exit" type box.
 		this.tbArea = document.getElementById("textboxArea");//make sure we get our web page element, since this script loads before the page, thus it's undefined at first.
 		player.freeze();//freeze player movement controls (may remove this)
@@ -31,6 +32,7 @@ function TextBoxShowcase(){//this function is used to show text boxes in the gam
 	
 	this.showForSeconds = (sec) => {//this is used to show the currentTextBox in a "Time_Exit" type, meaning it stays on the screen for a limited time and ignores user input
 		clearTimeout(this.myCloseBoxTimeoutMemory);//cancel the auto close timer any text box previously shown had one set (a "Time_Exit" text box that hadn't yet closed would auto close this box if we didn't)
+		clearInterval(this.myTextReveal);//if the previous text box was still typing, clear the interval to prevent the animations overlapping.
 		this.textboxType = "Time_Exit";//tell the game that this is an "Time_Exit" type box.
 		this.tbArea = document.getElementById("textboxArea");//make sure we get our web page element, since this script loads before the page, thus it's undefined at first.
 		this.textboxShowing = true;//tell the game that a text box is currently being shown.

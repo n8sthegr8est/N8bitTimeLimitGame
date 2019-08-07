@@ -1,4 +1,5 @@
 //Note: Time is not literally time. The flow of time is controlled by in-game actions, not real-life time.
+//Note: Ignore the note above. I realized that it was far more limiting with that system, so I changed it to be real-life time.
 
 function TimeStorage(Time_Limit){//this object keeps track of the time limit and the time elapsed
 	//this.Time_Limit = Time_Limit;//the maximum amount of time
