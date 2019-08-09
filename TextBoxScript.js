@@ -46,6 +46,7 @@ function TextBoxShowcase(){//this function is used to show text boxes in the gam
 	this.doTextTyping = () => {//this is the function that runs the typing animation
 		if(this.timesRun < this.currentTextBox.txt.length){//if this iterator is less than the length of the text of the current box, do the following
 			var textToShow = this.currentTextBox.txt.substring(0,this.timesRun+1);//show that number of characters from the text
+			textToShow = this.currentTextBox.applyTags(textToShow);
 			this.tbArea.innerHTML = textToShow;
 			this.timesRun++;//iterate the iterator.
 		}
@@ -69,7 +70,9 @@ function TextBoxShowcase(){//this function is used to show text boxes in the gam
 		if(e.code == "KeyZ"){//(otherwise) if the input was the z key, do the following
 			if(this.isTyping){//if the text is still typing, cancel the typing animation and show the full text.
 				clearInterval(this.myTextReveal);//this stops the typing animation
-				this.tbArea.innerHTML = this.currentTextBox.txt;//this shows the full text
+				var fullText = this.currentTextBox.txt;
+				fullText = this.currentTextBox.applyTags(fullText);
+				this.tbArea.innerHTML = fullText;//this shows the full text
 				this.isTyping = false;//this tells the game that the text box is done typing its text
 			}
 			else{//otherwise (if the text was already done typing), do the following
@@ -88,5 +91,118 @@ function TextBoxShowcase(){//this function is used to show text boxes in the gam
 }
 
 function TextBox(txt){//these are the text boxes shown on screen. It only knows about the text it shows.
-	this.txt = txt;
+	this.myText = new TextBoxText(txt);
+	this.txt = this.myText.txtPlain; 
+	
+	this.applyTags = (txt) => {
+		var holdTxt = "";
+		var tagNotEnded = false;
+		for(i = 0; i < txt.length; i++){
+			for(let j of this.myText.txtTags){
+				if(i==j.startChar){
+					holdTxt += "<span id=\"" + j.tagName + "\">"
+					tagNotEnded = true;
+				}
+				else if(i==j.endChar){
+					holdTxt += "</span>";
+					tagNotEnded = false;
+				}
+			}
+			holdTxt += txt.charAt(i);
+		}
+		if(tagNotEnded){
+			holdTxt += "</span>";
+		}
+		return holdTxt;
+	}
+}
+
+function TextBoxText(txt){
+	this.txtRaw = txt;
+	
+	this.getPlainText = () => {
+		var txtPlain = "";
+		var skipTag = false;
+		var skipNextChar = false;
+		for(let i = 0; i < this.txtRaw.length; i++){
+			if(this.txtRaw.charAt(i)=='<'){
+				if(this.txtRaw.charAt(i+1)!='!'){
+					skipTag = true;
+				}
+				else{
+					txtPlain += '<';
+					i++;
+					skipNextChar = true;
+				}
+			}
+			else if(this.txtRaw.charAt(i)=='>' && skipTag){
+				skipTag = false;
+				skipNextChar = true;
+			}
+			if(!skipTag && !skipNextChar){
+				txtPlain += this.txtRaw.charAt(i);
+			}
+			skipNextChar = false;
+		}
+		return txtPlain;
+	}
+	
+	this.txtPlain = this.getPlainText();
+	
+	this.getTags = () => {
+		var tagsFound = [];
+		var skipNonTag = true;
+		var skipNextChar = false;
+		var tagName = "";
+		var startChar = -1;
+		var endChar = -1;
+		var charInPlainText = 0;
+		var countCharsInPlainText = true;
+		/*var taggedAreaLength = 0;
+		var countTaggedAreaLength = false;*/
+		for(let i = 0; i < this.txtRaw.length; i++){
+			if(this.txtRaw.charAt(i)=='<' && this.txtRaw.charAt(i+1)!='!'){
+				skipNonTag = false;
+				skipNextChar = true;
+				if(startChar==-1){
+					startChar = charInPlainText;
+					countCharsInPlainText = false;
+				}
+				else{
+					endChar = charInPlainText;
+					tagsFound.push(new TextBoxTextTag(tagName, startChar, endChar));
+					i += tagName.length+1;
+					tagName = "";
+					startChar = -1;
+					endChar = -1;
+					countCharsInPlainText = false;
+				}
+			}
+			else if(this.txtRaw.charAt(i)=='>' && !skipNonTag){
+				skipNonTag = true;
+				countCharsInPlainText = true;
+				skipNextChar = true;
+				//endChar = i;
+				//tagsFound.push(new TextBoxTextTag(tagName,startChar,endChar));
+				//tagName = "";
+			}
+			if(!skipNonTag && !skipNextChar){
+				tagName += this.txtRaw.charAt(i);
+			}
+			if(countCharsInPlainText && !skipNextChar){
+				charInPlainText++;
+			}
+			skipNextChar = false;
+		}
+		return tagsFound;
+	}
+	
+	this.txtTags = this.getTags();
+	var dummy = 0;
+}
+
+function TextBoxTextTag(tagName,startChar,endChar){
+	this.tagName = tagName;
+	this.startChar = startChar;
+	this.endChar = endChar;
 }

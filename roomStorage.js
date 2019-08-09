@@ -249,6 +249,9 @@ function floorCovering(coverHeight,coverWidth,isDamaging){//The objects in a roo
 	}
 }
 
+//overheadDecorations have z-index of 7
+//function overheadDecoration(decoHeight,decoWidth){//the objects in the room that are above the characters. They may hide characters below them, so try not to get annoying with them
+
 //a set of default tiles for constructing test rooms.
 var defaultWalkableTile = new roomTile(true);
 var defaultUnwalkableTile = new roomTile();
