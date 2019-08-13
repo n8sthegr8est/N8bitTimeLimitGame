@@ -72,6 +72,7 @@ function TextBoxShowcase(){//this function is used to show text boxes in the gam
 				clearInterval(this.myTextReveal);//this stops the typing animation
 				var fullText = this.currentTextBox.txt;
 				fullText = this.currentTextBox.applyTags(fullText);
+				this.timesRun = fullText.length;
 				this.tbArea.innerHTML = fullText;//this shows the full text
 				this.isTyping = false;//this tells the game that the text box is done typing its text
 			}
@@ -108,7 +109,15 @@ function TextBox(txt){//these are the text boxes shown on screen. It only knows 
 					tagNotEnded = false;
 				}
 			}
-			holdTxt += txt.charAt(i);
+			if(txt.charAt(i)=='<'){
+				holdTxt += "&lt";
+			}
+			else if(txt.charAt(i)=='>'){
+				holdTxt += "&gt";
+			}
+			else{
+				holdTxt += txt.charAt(i);
+			}
 		}
 		if(tagNotEnded){
 			holdTxt += "</span>";
@@ -205,4 +214,33 @@ function TextBoxTextTag(tagName,startChar,endChar){
 	this.tagName = tagName;
 	this.startChar = startChar;
 	this.endChar = endChar;
+}
+
+function TextBoxSequence(txts){
+	this.txts = txts;
+	this.showLoc;
+	this.boxIndex = 0;
+	
+	this.playSequence = (showLoc) => {
+		this.showLoc = showLoc;
+		if(this.boxIndex >= this.txts.length){
+			document.removeEventListener("keypress",this.myListenerFunction);
+		}
+		else{
+			this.showLoc.setCurrentTextBox(new TextBox(txts[this.boxIndex]));
+			this.boxIndex++;
+			this.showLoc.showUntilInput();
+		}
+	}
+	
+	this.myListenerFunction = (e) => {
+		e = e || window.event;
+		if(e.code == "KeyZ"){
+			if(!this.showLoc.textboxShowing){
+				this.playSequence(this.showLoc);
+			}
+		}
+	}
+	
+	addListenerEvent(document,"keypress",this.myListenerFunction);
 }

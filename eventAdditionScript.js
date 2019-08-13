@@ -87,6 +87,11 @@ GameEvent.Presets = {
 		globalTextBoxShowcase.showForSeconds(sec);//tell the game to show a text box of type "Time_Exit" for sec seconds.
 	},
 	
+	showTextboxSequence: function(txts){
+		var myTBS = new TextBoxSequence(txts);
+		myTBS.playSequence(globalTextBoxShowcase);
+	},
+	
 	/*showTextbox: function(boxText){
 		//var tbArea = document.getElementById("textboxArea");
 		

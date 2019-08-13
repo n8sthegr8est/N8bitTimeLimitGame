@@ -25,7 +25,13 @@ window.onload = function(){
 	allGameEvents.addGameEvent(new GameEvent(0,0,[1,3],GameEvent.Presets.pauseTime.bind(this)));
 	allGameEvents.addGameEvent(new GameEvent(0,0,[2,3],GameEvent.Presets.unPauseTime.bind(this)));
 	//allGameEvents.addGameEvent(new GameEvent(0,0,[1,2],GameEvent.Presets.showTextbox_InputClose.bind(this,"Lorem ipsum dolors is lorem text and this is more words after it.")));
-	allGameEvents.addGameEvent(new GameEvent(0,0,[1,2],GameEvent.Presets.showTextbox_InputClose.bind(this,"Hello <charName>Player</charName>, you're in the <location>Start Room</location> and <stress>trapped</stress>!<!>")));
+	
+	//allGameEvents.addGameEvent(new GameEvent(0,0,[1,2],GameEvent.Presets.showTextbox_InputClose.bind(this,"Hello <charName>Player</charName>, you're in the <location>Start Room</location> and <stress>trapped</stress>!<!Not a tag>")));
+	
+	//allGameEvents.addGameEvent(GameEvent.Sequence(0,0,[1,2],[GameEvent.Presets.pauseTime.bind(this),GameEvent.Presets.showTextbox_InputClose.bind(this,"Hello, <charName>Player</charName>."),
+	//		GameEvent.Presets.showTextbox_InputClose.bind(this,"Welcome to the cutscene test."),GameEvent.Presets.showTextbox_InputClose.bind(this,"How are you doing?"),GameEvent.Presets.unPauseTime.bind(this)]));
+	allGameEvents.addGameEvent(GameEvent.Sequence(0,0,[1,2],[GameEvent.Presets.pauseTime.bind(this),GameEvent.Presets.showTextboxSequence.bind(this,["Hello, <charName>Player</charName>.","Welcome to the cutscene test.",
+							   "How are you doing?"]),GameEvent.Presets.unPauseTime.bind(this)]));
 	allGameEvents.addGameEvent(new GameEvent(0,0,[2,1],GameEvent.Presets.showTextbox_TimerClose.bind(this,"Lorem ipsum dolors is lorem text and this is more words after it.",3)));
 	//allGameEvents.addGameEvent(GameEvent.Sequence.creteSequence(0,0,[1,5],[GameEvent.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false),GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"falseFlag")]));
 	//allGameEvents.addGameEvent(new GameEvent(0,0,[24,5],GameEvent.Sequence.runSequence.bind(this,[GameEvent.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false),GameEvent.Presets.checkFlag.bind(this,globalFlagBank,"falseFlag",false)])));//.Presets.setFlag.bind(this,globalFlagBank,"falseFlag",false)));
